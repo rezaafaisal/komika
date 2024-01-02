@@ -4,6 +4,9 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
+import android.view.View
+import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -59,27 +62,38 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun modelAdapter(){
-        val books = listOf<Book>(
-            Book("Naruto", "Masashi Kisimoto", 23),
-            Book("Attack on Titan", "Hajime Isayama", 255),
-        )
-
         GlobalScope.launch {
             val newBooks = db.bookDao().getAll()
-
-            Log.e("MainActivity", newBooks[0].toString())
-            val bookAdapter = BookAdapter(newBooks, object : BookAdapter.OnAdapterListener{
+            val bookAdapter = BookAdapter(applicationContext, newBooks, object : BookAdapter.OnAdapterListener{
                 override fun onClick(book: Book) {
                     Log.d("MainActivity", book.toString())
                 }
-
             })
 
             findViewById<RecyclerView>(R.id.recycler_view).adapter = bookAdapter
         }
-
-
     }
 
+    private fun showPopupMenu(view: View) {
+        val popupMenu = PopupMenu(applicationContext, view)
+        popupMenu.menuInflater.inflate(R.menu.option, popupMenu.menu)
 
+        popupMenu.setOnMenuItemClickListener { item: MenuItem ->
+            when (item.itemId) {
+                R.id.update -> {
+                    // Handle menu item 1 click
+                    Toast.makeText(applicationContext, "Update Berhasil", Toast.LENGTH_SHORT).show()
+                    true
+                }
+
+                R.id.delete -> {
+                    Toast.makeText(applicationContext, "Delete Berhasil", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                // Add more cases for other menu items if needed
+                else -> false
+            }
+        }
+        popupMenu.show()
+    }
 }
