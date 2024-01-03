@@ -61,7 +61,7 @@ class AddBookActivity : AppCompatActivity() {
             }
 
             Toast.makeText(applicationContext, "Berhasil menambahkan Komik!", Toast.LENGTH_SHORT).show()
-            finish()
+            navigateUpTo(Intent(applicationContext, AddBookActivity::class.java))
         }
 
         pickImageButton.setOnClickListener {

@@ -1,6 +1,7 @@
 package com.example.storybookshelf
 
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -66,7 +67,8 @@ class BookAdapter(
                 R.id.update -> {
                     // Handle menu item 1 click
                     Log.d("dev", id.toString())
-                    Toast.makeText(context, "Update Berhasil", Toast.LENGTH_SHORT).show()
+                    context.startActivity(Intent(context, EditBookActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+//                    Toast.makeText(context, "Update Berhasil", Toast.LENGTH_SHORT).show()
                     true
                 }
 
