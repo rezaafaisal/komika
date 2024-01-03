@@ -15,6 +15,9 @@
         android:theme="@style/Theme.StorybookShelf"
         tools:targetApi="31">
         <activity
+            android:name=".EditBookActivity"
+            android:exported="false" />
+        <activity
             android:name=".AddBookActivity"
             android:exported="false" />
         <activity

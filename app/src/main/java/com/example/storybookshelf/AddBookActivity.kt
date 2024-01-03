@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.room.Room
 import com.example.storybookshelf.database.BookDatabase
@@ -49,7 +50,6 @@ class AddBookActivity : AppCompatActivity() {
         actionbar!!.title = "Tambah Koleksi Komik"
         actionbar.setDisplayHomeAsUpEnabled(true);
 
-
         saveButton.setOnClickListener {
             GlobalScope.launch {
                 val bookDao = db.bookDao()
@@ -61,7 +61,7 @@ class AddBookActivity : AppCompatActivity() {
             }
 
             Toast.makeText(applicationContext, "Berhasil menambahkan Komik!", Toast.LENGTH_SHORT).show()
-            startActivity(Intent(applicationContext, MainActivity::class.java))
+            finish()
         }
 
         pickImageButton.setOnClickListener {
