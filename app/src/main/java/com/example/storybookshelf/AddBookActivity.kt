@@ -61,18 +61,14 @@ class AddBookActivity : AppCompatActivity() {
             }
 
             Toast.makeText(applicationContext, "Berhasil menambahkan Komik!", Toast.LENGTH_SHORT).show()
-            navigateUpTo(Intent(applicationContext, AddBookActivity::class.java))
+
+            navigateUpTo(Intent(applicationContext, MainActivity::class.java))
         }
 
         pickImageButton.setOnClickListener {
             pickContract.launch("image/*")
         }
 
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
-        return true
     }
 
     private val pickContract = registerForActivityResult(ActivityResultContracts.GetContent()){

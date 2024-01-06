@@ -45,7 +45,7 @@ class BookAdapter(
         holder.page.text = book.totalPages.toString()
 
         holder.optionButton.setOnClickListener {
-            showPopupMenu(it, book.id)
+            ActionButton(context).showPopupMenu(it, book.id)
         }
 
         holder.itemView.setOnClickListener {
@@ -57,8 +57,12 @@ class BookAdapter(
     interface OnAdapterListener{
         fun onClick(book: Book)
     }
+}
 
-    private fun showPopupMenu(view: View, id: Int?) {
+class ActionButton(
+    private val context: Context
+){
+    public fun showPopupMenu(view: View, id: Int?) {
         val popupMenu = PopupMenu(context, view)
         popupMenu.menuInflater.inflate(R.menu.option, popupMenu.menu)
 
@@ -66,9 +70,9 @@ class BookAdapter(
             when (item.itemId) {
                 R.id.update -> {
                     // Handle menu item 1 click
-                    Log.d("dev", id.toString())
-                    context.startActivity(Intent(context, EditBookActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
-//                    Toast.makeText(context, "Update Berhasil", Toast.LENGTH_SHORT).show()
+                    val intentEditBook = Intent(context, EditBookActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    intentEditBook.putExtra("id", id)
+                    context.startActivity(intentEditBook)
                     true
                 }
 
@@ -82,6 +86,5 @@ class BookAdapter(
         }
         popupMenu.show()
     }
-
 }
 
