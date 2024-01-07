@@ -12,4 +12,24 @@
         Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also reproduced in their
         exact original form, accompanied by English versions from the 1914 translation by H. Rackham.
     </string>
+
+    <string name="title_add_page">
+        Add New Comic
+    </string>
+    <string name="title_edit_page">
+        Update Comic
+    </string>
+    <string name="title_detail_page">
+        About Comic
+    </string>
+
+    <string name="success_message_insert">
+        Added Succesfully
+    </string>
+    <string name="success_message_delete">
+        Deleted Succesfully
+    </string>
+    <string name="success_message_update">
+        Updated Successfully
+    </string>
 </resources>

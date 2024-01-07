@@ -10,6 +10,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
@@ -23,12 +24,12 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class BookAdapter(
-    private val context: Context,
     private val book: List<Book>,
     private val listener: OnAdapterListener
 ): RecyclerView.Adapter<BookAdapter.ViewHolder>() {
 
     class ViewHolder(view: View): RecyclerView.ViewHolder(view){
+        val cover = view.findViewById<ImageView>(R.id.cover)
         val title = view.findViewById<TextView>(R.id.title)
         val author = view.findViewById<TextView>(R.id.author)
         val page = view.findViewById<TextView>(R.id.page)
@@ -47,9 +48,10 @@ class BookAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val book = book[position]
 
+        holder.cover.setImageBitmap(book.cover)
         holder.title.text = book.title
-        holder.author.text = book.author
-        holder.page.text = book.totalPages.toString()
+        holder.author.text = "Author : ${book.author}"
+        holder.page.text = "Total Pages : ${book.totalPages}"
 
         holder.itemView.setOnClickListener {
             listener.onClick(book)
@@ -63,10 +65,4 @@ class BookAdapter(
     }
 }
 
-class ActionButton(
-    private val context: Context
-){
-
-
-}
 

@@ -25,7 +25,6 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity() {
     lateinit var db: BookDatabase
     lateinit var floatingAddButton: FloatingActionButton
-    lateinit var restart: Button
     @RequiresApi(34)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,23 +33,21 @@ class MainActivity : AppCompatActivity() {
 //        permission launcher
         permissionLauncher.launch(arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE))
 
-//        init database
-        db = Room.databaseBuilder(applicationContext, BookDatabase::class.java, "book-db").build()
-
+//        init components
+        initComponents()
         modelAdapter()
-
-        floatingAddButton = findViewById(R.id.floating_add)
 
         floatingAddButton.setOnClickListener {
             startActivity(Intent(applicationContext, AddBookActivity::class.java))
         }
 
-        restart = findViewById(R.id.restart)
+    }
 
-        restart.setOnClickListener {
-            recreate()
-        }
-
+    private fun initComponents(){
+        db = Room.databaseBuilder(applicationContext, BookDatabase::class.java, "book-db")
+            .fallbackToDestructiveMigration()
+            .build()
+        floatingAddButton = findViewById(R.id.floating_add)
     }
 
     private val permissionLauncher = registerForActivityResult(
@@ -59,7 +56,6 @@ class MainActivity : AppCompatActivity() {
 
         var areAllGranted = true
         for (isGranted in result.values){
-            Log.d("TAG", "tes")
             areAllGranted = areAllGranted && isGranted
         }
 
@@ -76,11 +72,16 @@ class MainActivity : AppCompatActivity() {
     private fun modelAdapter(){
         GlobalScope.launch {
             val newBooks = db.bookDao().getAll()
-            val bookAdapter = BookAdapter(this@MainActivity, newBooks, object : BookAdapter.OnAdapterListener{
+            val bookAdapter = BookAdapter(newBooks, object : BookAdapter.OnAdapterListener{
                 override fun onClick(book: Book) {
-
                     val bookDetailIntent = Intent(applicationContext, BookDetail::class.java)
-                    bookDetailIntent.putExtra("book", book.toString())
+                    bookDetailIntent.putExtra("id", book.id)
+                    bookDetailIntent.putExtra("cover", book.cover)
+                    bookDetailIntent.putExtra("title", book.title)
+                    bookDetailIntent.putExtra("author", book.author)
+                    bookDetailIntent.putExtra("pages", book.totalPages)
+                    bookDetailIntent.putExtra("description", book.description)
+
                     startActivity(bookDetailIntent)
                 }
             })
@@ -88,4 +89,6 @@ class MainActivity : AppCompatActivity() {
             findViewById<RecyclerView>(R.id.recycler_view).adapter = bookAdapter
         }
     }
+
+
 }

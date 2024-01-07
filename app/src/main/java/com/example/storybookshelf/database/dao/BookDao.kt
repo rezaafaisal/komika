@@ -1,5 +1,6 @@
 package com.example.storybookshelf.database.dao
 
+import android.graphics.Bitmap
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -19,11 +20,13 @@ interface BookDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(vararg books: Book)
 
-    @Query("UPDATE book SET title=:title, author=:author, total_pages=:pages WHERE id=:id")
+    @Query("UPDATE book SET cover=:cover,  title=:title, author=:author, total_pages=:pages, description=:description WHERE id=:id")
     fun update(id: Int,
                title: String,
                author: String,
-               pages: Int)
+               pages: Int,
+               description: String,
+               cover: Bitmap)
 
     @Delete
     fun delete(book: Book)

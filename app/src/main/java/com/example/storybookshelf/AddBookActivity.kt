@@ -2,8 +2,10 @@ package com.example.storybookshelf
 
 import android.content.Intent
 import android.graphics.Bitmap
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.widget.Button
 import android.widget.ImageView
@@ -11,6 +13,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.FileProvider
+import androidx.core.view.drawToBitmap
 import androidx.room.Room
 import com.example.storybookshelf.database.BookDatabase
 import com.example.storybookshelf.database.entity.Book
@@ -18,6 +22,7 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.io.File
 
 class AddBookActivity : AppCompatActivity() {
     lateinit var db: BookDatabase
@@ -26,8 +31,8 @@ class AddBookActivity : AppCompatActivity() {
     lateinit var title: TextInputEditText
     lateinit var author: TextInputEditText
     lateinit var pageCount: TextInputEditText
+    lateinit var description: TextInputEditText
     lateinit var saveButton: Button
-
 
     private fun initComponents(){
         db = Room.databaseBuilder(applicationContext, BookDatabase::class.java, "book-db").build()
@@ -37,6 +42,7 @@ class AddBookActivity : AppCompatActivity() {
         title = findViewById(R.id.input_title)
         author = findViewById(R.id.input_author)
         pageCount = findViewById(R.id.input_page)
+        description = findViewById(R.id.input_description)
         saveButton = findViewById(R.id.button_save)
     }
 
@@ -48,20 +54,22 @@ class AddBookActivity : AppCompatActivity() {
         initComponents()
 
         val actionbar = supportActionBar
-        actionbar!!.title = "Tambah Koleksi Komik"
-        actionbar.setDisplayHomeAsUpEnabled(true);
+        actionbar?.setTitle(R.string.title_add_page)
+        actionbar?.setDisplayHomeAsUpEnabled(true)
 
         saveButton.setOnClickListener {
             GlobalScope.launch {
                 val bookDao = db.bookDao()
                 bookDao.insert(Book(
+                    cover = coverImage.drawToBitmap(),
                     title = title.text.toString(),
                     author = author.text.toString(),
-                    totalPages = pageCount.text.toString().toInt()
+                    totalPages = pageCount.text.toString().toInt(),
+                    description = description.text.toString()
                 ))
             }
 
-            Toast.makeText(applicationContext, "Berhasil menambahkan Komik!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(applicationContext, R.string.success_message_insert, Toast.LENGTH_SHORT).show()
 
             navigateUpTo(Intent(applicationContext, MainActivity::class.java))
         }
@@ -74,9 +82,11 @@ class AddBookActivity : AppCompatActivity() {
 
     private val pickContract = registerForActivityResult(ActivityResultContracts.GetContent()){
         if(it != null){
+            Log.d("dev", it.toString())
             coverImage.setImageURI(it)
         }
     }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){

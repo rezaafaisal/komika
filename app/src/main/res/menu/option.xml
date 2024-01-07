@@ -6,5 +6,5 @@
 
     <item
         android:id="@+id/delete"
-        android:title="Hapus"/>
+        android:title="Delete"/>
 </menu>
