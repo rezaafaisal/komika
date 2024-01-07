@@ -1,5 +1,7 @@
 package com.example.storybookshelf
 
+import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.util.Log
@@ -11,8 +13,14 @@ import android.widget.Button
 import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.Room
+import com.example.storybookshelf.database.BookDatabase
 import com.example.storybookshelf.database.entity.Book
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class BookAdapter(
     private val context: Context,
@@ -24,7 +32,6 @@ class BookAdapter(
         val title = view.findViewById<TextView>(R.id.title)
         val author = view.findViewById<TextView>(R.id.author)
         val page = view.findViewById<TextView>(R.id.page)
-        val optionButton = view.findViewById<Button>(R.id.button_option)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -44,13 +51,10 @@ class BookAdapter(
         holder.author.text = book.author
         holder.page.text = book.totalPages.toString()
 
-        holder.optionButton.setOnClickListener {
-            ActionButton(context).showPopupMenu(it, book.id)
-        }
-
         holder.itemView.setOnClickListener {
             listener.onClick(book)
         }
+
 
     }
 
@@ -62,29 +66,7 @@ class BookAdapter(
 class ActionButton(
     private val context: Context
 ){
-    public fun showPopupMenu(view: View, id: Int?) {
-        val popupMenu = PopupMenu(context, view)
-        popupMenu.menuInflater.inflate(R.menu.option, popupMenu.menu)
 
-        popupMenu.setOnMenuItemClickListener { item: MenuItem ->
-            when (item.itemId) {
-                R.id.update -> {
-                    // Handle menu item 1 click
-                    val intentEditBook = Intent(context, EditBookActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    intentEditBook.putExtra("id", id)
-                    context.startActivity(intentEditBook)
-                    true
-                }
 
-                R.id.delete -> {
-                    Toast.makeText(context, "Delete Berhasil", Toast.LENGTH_SHORT).show()
-                    true
-                }
-                // Add more cases for other menu items if needed
-                else -> false
-            }
-        }
-        popupMenu.show()
-    }
 }
 

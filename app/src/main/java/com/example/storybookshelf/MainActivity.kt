@@ -3,13 +3,17 @@ package com.example.storybookshelf
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Parcel
+import android.os.Parcelable
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
 import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
 import com.example.storybookshelf.database.BookDatabase
@@ -21,6 +25,8 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity() {
     lateinit var db: BookDatabase
     lateinit var floatingAddButton: FloatingActionButton
+    lateinit var restart: Button
+    @RequiresApi(34)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -39,6 +45,12 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(applicationContext, AddBookActivity::class.java))
         }
 
+        restart = findViewById(R.id.restart)
+
+        restart.setOnClickListener {
+            recreate()
+        }
+
     }
 
     private val permissionLauncher = registerForActivityResult(
@@ -52,7 +64,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         if (areAllGranted){
-            Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show()
         }
         else{
             Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
@@ -64,36 +76,16 @@ class MainActivity : AppCompatActivity() {
     private fun modelAdapter(){
         GlobalScope.launch {
             val newBooks = db.bookDao().getAll()
-            val bookAdapter = BookAdapter(applicationContext, newBooks, object : BookAdapter.OnAdapterListener{
+            val bookAdapter = BookAdapter(this@MainActivity, newBooks, object : BookAdapter.OnAdapterListener{
                 override fun onClick(book: Book) {
-                    Log.d("MainActivity", book.toString())
+
+                    val bookDetailIntent = Intent(applicationContext, BookDetail::class.java)
+                    bookDetailIntent.putExtra("book", book.toString())
+                    startActivity(bookDetailIntent)
                 }
             })
 
             findViewById<RecyclerView>(R.id.recycler_view).adapter = bookAdapter
         }
-    }
-
-    private fun showPopupMenu(view: View) {
-        val popupMenu = PopupMenu(applicationContext, view)
-        popupMenu.menuInflater.inflate(R.menu.option, popupMenu.menu)
-
-        popupMenu.setOnMenuItemClickListener { item: MenuItem ->
-            when (item.itemId) {
-                R.id.update -> {
-                    // Handle menu item 1 click
-                    Toast.makeText(applicationContext, "Update Berhasil", Toast.LENGTH_SHORT).show()
-                    true
-                }
-
-                R.id.delete -> {
-                    Toast.makeText(applicationContext, "Delete Berhasil", Toast.LENGTH_SHORT).show()
-                    true
-                }
-                // Add more cases for other menu items if needed
-                else -> false
-            }
-        }
-        popupMenu.show()
     }
 }

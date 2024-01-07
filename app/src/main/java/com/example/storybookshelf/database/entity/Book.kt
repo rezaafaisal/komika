@@ -1,6 +1,7 @@
 package com.example.storybookshelf.database.entity
 
 import android.graphics.Bitmap
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
